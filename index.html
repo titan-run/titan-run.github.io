@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>진격의 거인 달리기 게임</title>
+    <link rel="stylesheet" href="/styles.css">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1947918642488492"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <nav class="nav-bar">
+        <a href="#rules">게임 규칙 상세</a>
+        <a href="#titans">진격의 거인 소개</a>
+        <a href="/privacy.html">개인정보처리방침</a> <a href="/contact.html">문의 및 피드백</a> 
+    </nav>
+
+    <div class="container">
+        <h1>🏃‍♂️ 진격의 거인 달리기 게임 🏃‍♂️</h1>
+
+        <!-- 거인 선택 화면 -->
+        <div id="selectionScreen" class="selection-screen">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #F5DEB3; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">경주에 참여할 거인들을 선택하세요!</h2>
+            <div class="titan-grid" id="titanGrid"></div>
+            <div class="controls">
+                <p id="selectionCount" style="color: #F5DEB3; font-size: 1.1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">선택된 거인: 0개 (최소 2개 이상 선택하세요)</p>
+                <button id="startBtn" disabled onclick="startRace()">게임 시작!</button>
+            </div>
+        </div>
+
+        <!-- 게임 화면 -->
+        <div id="gameScreen" class="game-screen hidden">
+            <div class="game-info">
+                <span id="gameStatus">준비중...</span>
+            </div>
+            <div id="raceTrack" class="race-track"></div>
+            <div class="controls">
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div id="resultScreen" class="result-screen hidden">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #F5DEB3; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">🏆 경주 결과 🏆</h2>
+            <ul id="resultList" class="result-list"></ul>
+            <div class="controls">
+                <button onclick="playAgain()">다시 경주하기</button>
+                <button onclick="resetGame()">거인 다시 선택하기</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="rules">
+        <h2>🎲 거인 런: 운명의 경주 규칙</h2>
+        <p>《거인 런》은 플레이어가 '운명의 거인'을 선택하여, 예측할 수 없는 경주 결과에 도전하는 캐주얼 시뮬레이션 게임입니다. 복잡한 조작 없이, 거인 선택 후 경주의 결과를 확인하는 재미에 집중합니다.</p>
+
+        <h3>1. 플레이어 참여 방법</h3>
+        <ul>
+            <li><strong>1단계: 거인 선택:</strong> 화면에 제시된 아홉 거인 중 원하는 거인을 선택합니다. 이 거인이 당신의 '경주 대표'가 됩니다.</li>
+            <li><strong>2단계: 경주 시작:</strong> '경주 시작' 버튼을 누르면 시뮬레이션이 시작됩니다.</li>
+            <li><strong>3단계: 결과 확인:</strong> 거인들의 달리기 시뮬레이션 후, **랜덤한 요소**가 가미된 최종 순위가 결정됩니다.</li>
+        </ul>
+
+        <h3>2. 순위 결정의 비밀: '운명'의 요소</h3>
+        <p>이 게임의 핵심 재미는 **예측 불가능성**에 있습니다. 순위는 오직 당신의 운에 달려 있습니다. 하지만 다음의 요소들이 경주에 미묘하게 영향을 미칠 수 있습니다. (※이 부분은 게임의 미스터리 요소를 부각하기 위한 서술입니다.)</p>
+        <ul>
+            <li><strong>거인별 잠재력:</strong> 거인이 가진 원작 속의 특징(속도, 체력, 특수 능력 등)이 **'잠재적인 가중치'**로 작용하여, 당신의 거인에게 미세한 운의 기회를 제공할 수 있습니다.</li>
+            <li><strong>미지의 변수:</strong> 경주 중 발생하는 **'기행종 출몰'** 혹은 **'예기치 못한 경질화 실패'** 등, 순식간에 순위를 뒤바꿀 수 있는 무작위 이벤트가 적용됩니다.</li>
+        </ul>
+
+        <div class="titan-select-tip">
+            **💡 팁:** 어떤 거인을 선택하든 순위는 랜덤하게 결정될 수 있지만, 당신의 '최애 거인'이 우승할 때의 기쁨은 그 무엇보다 클 것입니다!
+        </div>
+    </div>
+
+    <div class="container" id="titans">
+        <h2>👹 진격의 거인 속 9대 거인 소개</h2>
+        <p>《진격의 거인》 세계관을 지탱하는 아홉 거인들의 특징을 소개합니다. 게임 속에서 구현된 그들의 능력을 미리 확인해 보세요. 아홉 거인 모두를 선택하여 운명의 경주에 참여할 수 있습니다!</p>
+
+        <div class="titan-card">
+            <img src="./images/founding_titan_card.png" alt="시조 거인 카드 이미지" class="titan-image">
+            <div class="titan-details">
+                <h3>시조 거인 (Founding Titan)</h3>
+                <p><strong>특징:</strong> 모든 거인의 시초이자 정점. '좌표'를 통해 모든 엘디아인의 기억과 육체를 조작하고 무지성 거인을 통제하는 궁극의 능력을 가졌습니다.</p>
+                <ul>
+                    <li><strong>주요 능력:</strong> 거인 조종, 기억/신체 조작 (게임 내에서는 초월적인 '운'의 가중치 예상)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="titan-card">
+            <img src="./images/attack_titan_card.png" alt="진격의 거인 카드 이미지" class="titan-image">
+            <div class="titan-details">
+                <h3>진격의 거인 (Attack Titan)</h3>
+                <p><strong>특징:</strong> 시대를 초월하여 자유를 추구하며 미래의 계승자 기억을 볼 수 있습니다. 높은 기동성과 강력한 격투 능력을 자랑하는 전형적인 전투형 거인입니다.</p>
+                <ul>
+                    <li><strong>주요 능력:</strong> 미래 계승자의 기억 열람, 강한 전투 의지</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="titan-card">
+            <img src="./images/colossal_titan_card.png" alt="초대형 거인 카드 이미지" class="titan-image">
+            <div class="titan-details">
+                <h3>초대형 거인 (Colossal Titan)</h3>
+                <p><strong>특징:</strong> 약 60미터의 거대한 신장으로, 변신 시 충격파와 고열의 증기를 무기로 사용합니다. 느리지만 압도적인 파괴력을 가졌습니다.</p>
+                <ul>
+                    <li><strong>주요 능력:</strong> 고열의 증기 방출, 거인화 시의 대규모 충격파</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="titan-card">
+            <img src="./images/armored_titan_card.png" alt="갑옷 거인 카드 이미지" class="titan-image">
+            <div class="titan-details">
+                <h3>갑옷 거인 (Armored Titan)</h3>
+                <p><strong>특징:</strong> 전신이 단단한 경질화 피부로 덮여 있어 뛰어난 방어력을 자랑합니다. 돌진 능력이 뛰어나며 전방의 장애물을 돌파하는 데 특화되어 있습니다.</p>
+                <ul>
+                    <li><strong>주요 능력:</strong> 전신 경질화, 높은 방어력과 돌진 속도</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="titan-card">
+            <img src="./images/female_titan_card.png" alt="여성형 거인 카드 이미지" class="titan-image">
+            <div class="titan-details">
+                <h3>여성형 거인 (Female Titan)</h3>
+                <p><strong>특징:</strong> 균형 잡힌 능력치를 가졌으며, 신체 일부를 순간적으로 경질화하여 공방에 활용합니다. 장거리 질주에 유리하며 지구력이 뛰어납니다.</p>
+                <ul>
+                    <li><strong>주요 능력:</strong> 부분 경질화, 높은 기동성과 지구력</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="titan-card">
+            <img src="./images/beast_titan_card.png" alt="짐승 거인 카드 이미지" class="titan-image">
+            <div class="titan-details">
+                <h3>짐승 거인 (Beast Titan)</h3>
+                <p><strong>특징:</strong> 긴 팔과 강력한 투척 능력이 주특기입니다. 계승자에 따라 다양한 동물의 특징을 가지며, 주로 원거리 공격 및 지휘에 능합니다.</p>
+                <ul>
+                    <li><strong>주요 능력:</strong> 강력한 투척 및 원거리 공격, 포효를 통한 무지성 거인 통제 (제한적)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="titan-card">
+            <img src="./images/jaw_titan_card.png" alt="턱 거인 카드 이미지" class="titan-image">
+            <div class="titan-details">
+                <h3>턱 거인 (Jaw Titan)</h3>
+                <p><strong>특징:</strong> 아홉 거인 중 가장 작지만, 폭발적인 속도와 강력한 턱과 발톱 경질화를 이용한 파괴력을 가졌습니다. 민첩성이 최고 수준입니다.</p>
+                <ul>
+                    <li><strong>주요 능력:</strong> 초고속 기동성, 강력한 턱/발톱을 이용한 파괴력</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="titan-card">
+            <img src="./images/cart_titan_card.png" alt="차력 거인 카드 이미지" class="titan-image">
+            <div class="titan-details">
+                <h3>차력 거인 (Cart Titan)</h3>
+                <p><strong>특징:</strong> 사족 보행을 하며, 뛰어난 지구력과 지속적인 활동이 가능합니다. 등 위에 무장 플랫폼을 싣고 전투 지원 및 장거리 수송 임무를 수행하는 데 특화되어 있습니다.</p>
+                <ul>
+                    <li><strong>주요 능력:</strong> 장기간 거인화 유지, 높은 지구력과 수송 능력</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="titan-card">
+            <img src="./images/warhammer_titan_card.png" alt="전퇴 거인 카드 이미지" class="titan-image">
+            <div class="titan-details">
+                <h3>전퇴 거인 (War Hammer Titan)</h3>
+                <p><strong>특징:</strong> 거인 자체의 본체 외부에 경질화 물질을 생성하여 무기나 구조물을 만들어냅니다. 본체를 지하에 숨길 수 있어 방어와 공격 모두 예측하기 어렵습니다.</p>
+                <ul>
+                    <li><strong>주요 능력:</strong> 경질화 물질로 다양한 무기 생성, 본체와 거인 분리</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const titans = [
+            { 
+                name: "시조의 거인", 
+                cardImage: "images/founding_titan_card.png",
+                runnerImage: "images/founding_titan_runner.png"
+            },
+            { 
+                name: "진격의 거인", 
+                cardImage: "images/attack_titan_card.png",
+                runnerImage: "images/attack_titan_runner.png"
+            },
+            { 
+                name: "초대형 거인", 
+                cardImage: "images/colossal_titan_card.png",
+                runnerImage: "images/colossal_titan_runner.png"
+            },
+            { 
+                name: "갑옷 거인", 
+                cardImage: "images/armored_titan_card.png",
+                runnerImage: "images/armored_titan_runner.png"
+            },
+            { 
+                name: "여성형 거인", 
+                cardImage: "images/female_titan_card.png",
+                runnerImage: "images/female_titan_runner.png"
+            },
+            { 
+                name: "짐승 거인", 
+                cardImage: "images/beast_titan_card.png",
+                runnerImage: "images/beast_titan_runner.png"
+            },
+            { 
+                name: "턱 거인", 
+                cardImage: "images/jaw_titan_card.png",
+                runnerImage: "images/jaw_titan_runner.png"
+            },
+            { 
+                name: "전차 거인", 
+                cardImage: "images/cart_titan_card.png",
+                runnerImage: "images/cart_titan_runner.png"
+            },
+            { 
+                name: "워해머 거인", 
+                cardImage: "images/warhammer_titan_card.png",
+                runnerImage: "images/warhammer_titan_runner.png"
+            }
+        ];
+
+        let selectedTitans = [];
+        let raceInProgress = false;
+        let raceResults = [];
+
+        function getDefaultEmoji(titanName) {
+            const emojiMap = {
+                "시조의 거인": "👑",
+                "진격의 거인": "⚔️", 
+                "초대형 거인": "🏗️",
+                "갑옷 거인": "🛡️",
+                "여성형 거인": "👩",
+                "짐승 거인": "🦍",
+                "턱 거인": "🦷",
+                "전차 거인": "🚗",
+                "워해머 거인": "🔨"
+            };
+            return emojiMap[titanName] || "🔸";
+        }
+
+        function initGame() {
+            renderTitanGrid();
+            updateSelectionUI();
+        }
+
+        function renderTitanGrid() {
+            const grid = document.getElementById('titanGrid');
+            grid.innerHTML = '';
+            
+            titans.forEach((titan, index) => {
+                const card = document.createElement('div');
+                card.className = 'titan-card';
+                card.onclick = () => toggleTitan(index);
+                
+                const isImagePath = titan.cardImage.includes('/');
+                const cardContent = isImagePath ? 
+                    `<img src="${titan.cardImage}" alt="${titan.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                     <div style="display:none; font-size:4rem;">${getDefaultEmoji(titan.name)}</div>` 
+                    : titan.cardImage;
+                
+                card.innerHTML = `
+                    <div class="titan-emoji">${cardContent}</div>
+                    <div class="titan-name">${titan.name}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleTitan(index) {
+            if (selectedTitans.includes(index)) {
+                selectedTitans = selectedTitans.filter(i => i !== index);
+            } else {
+                selectedTitans.push(index);
+            }
+            updateSelectionUI();
+        }
+
+        function updateSelectionUI() {
+            const cards = document.querySelectorAll('.titan-card');
+            cards.forEach((card, index) => {
+                card.classList.toggle('selected', selectedTitans.includes(index));
+            });
+
+            const count = selectedTitans.length;
+            document.getElementById('selectionCount').textContent = 
+                `선택된 거인: ${count}개 ${count < 2 ? '(최소 2개 이상 선택하세요)' : ''}`;
+            
+            document.getElementById('startBtn').disabled = count < 2;
+        }
+
+        function startRace() {
+            document.getElementById('selectionScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            
+            setupRaceTrack();
+            setTimeout(runRace, 1000);
+        }
+
+        function createEffect(runner, effectType) {
+            const particle = document.createElement('div');
+            particle.className = 'effect-particle';
+            
+            const effects = {
+                attack: '💥',
+                hit: '💫',
+                stun: '😵',
+                finish: '🎉'
+            };
+            
+            particle.textContent = effects[effectType] || '✨';
+            particle.style.left = runner.style.left;
+            particle.style.top = '20%';
+            
+            runner.parentElement.appendChild(particle);
+            
+            setTimeout(() => {
+                if (particle.parentElement) {
+                    particle.parentElement.removeChild(particle);
+                }
+            }, 1000);
+        }
+
+        function setRunnerState(index, state) {
+            const runner = document.getElementById(`runner-${index}`);
+            const statusElement = document.getElementById(`status-${index}`);
+            
+            if (!runner) return;
+            
+            // 모든 상태 클래스 제거
+            runner.classList.remove('attacking', 'stunned', 'running', 'finished', 'hit');
+            
+            switch(state) {
+                case 'attack':
+                    runner.classList.add('attacking');
+                    statusElement.textContent = '';
+                    createEffect(runner, 'attack');
+                    break;
+                case 'stunned':
+                    runner.classList.add('stunned');
+                    statusElement.textContent = '';
+                    createEffect(runner, 'stun');
+                    break;
+                case 'hit':
+                    runner.classList.add('hit');
+                    statusElement.textContent = '';
+                    createEffect(runner, 'hit');
+                    break;
+                case 'running':
+                    runner.classList.add('running');
+                    statusElement.textContent = '';
+                    break;
+                case 'finished':
+                    runner.classList.add('finished');
+                    statusElement.textContent = '';
+                    createEffect(runner, 'finish');
+                    break;
+                default:
+                    statusElement.textContent = '';
+            }
+        }
+
+        function setupRaceTrack() {
+            const track = document.getElementById('raceTrack');
+            track.innerHTML = '';
+            
+            selectedTitans.forEach(index => {
+                const titan = titans[index];
+                const trackElement = document.createElement('div');
+                
+                const isImagePath = titan.runnerImage.includes('/');
+                const runnerContent = isImagePath ? 
+                    `<img src="${titan.runnerImage}" alt="${titan.name}" onerror="this.outerHTML='${getDefaultEmoji(titan.name)}';">` 
+                    : titan.runnerImage;
+                
+                trackElement.innerHTML = `
+                    <div class="runner-status" id="status-${index}"></div>
+                    <div class="track">
+                        <div class="titan-runner" id="runner-${index}">${runnerContent}</div>
+                        <div class="finish-line"></div>
+                    </div>
+                `;
+                track.appendChild(trackElement);
+            });
+        }
+
+        function runRace() {
+            raceInProgress = true;
+            raceResults = [];
+            document.getElementById('gameStatus').textContent = '경주 시작!';
+            
+            const runners = {};
+            const positions = {};
+            const stunned = {};
+            
+            selectedTitans.forEach(index => {
+                runners[index] = document.getElementById(`runner-${index}`);
+                positions[index] = 0;
+                stunned[index] = 0;
+            });
+
+            const raceInterval = setInterval(() => {
+                let raceFinished = false;
+                
+                selectedTitans.forEach(index => {
+                    if (positions[index] >= 100) return;
+                    
+                    const titan = titans[index];
+                    
+                    // 기절 상태 처리
+                    if (stunned[index] > 0) {
+                        stunned[index]--;
+                        setRunnerState(index, 'stunned');
+                        return;
+                    }
+                    
+                    // 완전 랜덤 속도 (0.0 ~ 2.0 범위)
+                    const speed = Math.random() * 2.0;
+                    positions[index] += speed;
+                    
+                    // 랜덤 공격 확률 (5% 확률로 공격)
+                    if (Math.random() < 0.05) {
+                        const targets = selectedTitans.filter(t => t !== index && positions[t] < 100);
+                        if (targets.length > 0) {
+                            const target = targets[Math.floor(Math.random() * targets.length)];
+                            stunned[target] = Math.floor(Math.random() * 2) + 1;
+                            
+                            // 공격자와 피격자 효과 적용
+                            setRunnerState(index, 'attack');
+                            setTimeout(() => setRunnerState(target, 'hit'), 200);
+                            
+                            // 1초 후 공격 효과 제거
+                            setTimeout(() => {
+                                if (stunned[index] === 0 && positions[index] < 100) {
+                                    setRunnerState(index, 'running');
+                                }
+                            }, 1000);
+                        }
+                    } else {
+                        setRunnerState(index, 'running');
+                    }
+                    
+                    // 위치 업데이트
+                    const percentage = Math.min(positions[index], 100);
+                    runners[index].style.left = `${percentage - 5}%`;
+                    
+                    // 결승선 도달 체크
+                    if (positions[index] >= 100 && !raceResults.find(r => r.index === index)) {
+                        raceResults.push({ 
+                            index: index, 
+                            titan: titan, 
+                            rank: raceResults.length + 1 
+                        });
+                        setRunnerState(index, 'finished');
+                    }
+                });
+                
+                // 모든 거인이 완주했는지 체크
+                if (raceResults.length === selectedTitans.length) {
+                    clearInterval(raceInterval);
+                    setTimeout(showResults, 1000);
+                }
+            }, 100);
+        }
+
+        function showResults() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            
+            const resultList = document.getElementById('resultList');
+            resultList.innerHTML = '';
+            
+            raceResults.forEach((result, index) => {
+                const li = document.createElement('li');
+                li.className = 'result-item';
+                
+                const isImagePath = result.titan.runnerImage.includes('/');
+                const titanDisplay = isImagePath ? 
+                    `<img src="${result.titan.runnerImage}" alt="${result.titan.name}" onerror="this.outerHTML='${getDefaultEmoji(result.titan.name)}';">` 
+                    : result.titan.runnerImage;
+                
+                let rankClass = '';
+                let rankText = `${result.rank}위`;
+                if (result.rank === 1) {
+                    rankClass = 'first';
+                    rankText = '🥇 1위';
+                } else if (result.rank === 2) {
+                    rankClass = 'second';
+                    rankText = '🥈 2위';
+                } else if (result.rank === 3) {
+                    rankClass = 'third';
+                    rankText = '🥉 3위';
+                }
+                
+                li.innerHTML = `
+                    <span class="rank ${rankClass}">${rankText}</span>
+                    <span class="result-titan">${titanDisplay}</span>
+                    <span class="result-name">${result.titan.name}</span>
+                `;
+                resultList.appendChild(li);
+            });
+        }
+
+        function playAgain() {
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            setupRaceTrack();
+            setTimeout(runRace, 1000);
+        }
+
+        function resetGame() {
+            selectedTitans = [];
+            raceResults = [];
+            raceInProgress = false;
+            
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('selectionScreen').classList.remove('hidden');
+            
+            updateSelectionUI();
+        }
+
+        // 게임 초기화
+        initGame();
+    </script>
+
+</body>
+</html>
